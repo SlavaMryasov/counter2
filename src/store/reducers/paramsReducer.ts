@@ -1,6 +1,7 @@
 import { StateParamsType } from "../store"
 
 const SET_START_VALUES = 'SET-START-VALUES'
+export const RETURN_TO_INITIAL = 'RETURN-TO-INITIAL'
 
 const initialState: StateParamsType = {
     startValue: 0,
@@ -18,11 +19,18 @@ export const paramsReducer = (state: StateParamsType = initialState, action: Act
                 disabledSet: action.payload.disabledSet
             }
         }
+        case RETURN_TO_INITIAL: {
+            return {
+                ...state,
+                disabledSet: action.payload.disabledSet
+            }
+        }
+
         default: return state
     }
 }
 
-type ActionType = ChangeStart
+type ActionType = ChangeStart | ReturnToInitial
 
 
 type ChangeStart = {
@@ -34,6 +42,18 @@ type ChangeStart = {
     }
 }
 
+export type ReturnToInitial = {
+    type: 'RETURN-TO-INITIAL'
+    payload: {
+        disabledSet: boolean
+        disabledInc: boolean
+        disabledRes: boolean
+        value: string
+    }
+}
+
+
+
 export const setStartValuesAC = (start: number, max: number, disabled: boolean) => {
     return {
         type: SET_START_VALUES,
@@ -44,5 +64,15 @@ export const setStartValuesAC = (start: number, max: number, disabled: boolean) 
         }
     } as const
 }
-
+export const returnToInitialAC = (enterMessage: string) => {
+    return {
+        type: RETURN_TO_INITIAL,
+        payload: {
+            disabledSet: false,
+            disabledInc: true,
+            disabledRes: true,
+            value: enterMessage
+        }
+    } as const
+}
 

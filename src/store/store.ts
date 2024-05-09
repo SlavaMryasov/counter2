@@ -8,6 +8,19 @@ export type StateParamsType = {
     disabledSet: boolean
 }
 
+export type Messages = {
+    enterMessage: string
+    incorrectMessages: string
+}
+
+export type StateCounterType = {
+    messages: Messages
+    value: string
+    disabledInc: boolean
+    disabledRes: boolean
+}
+
+
 const rootReducer = combineReducers({
     params: paramsReducer,
     counter: counterReducer
@@ -17,3 +30,5 @@ export type AppRootReducer = ReturnType<typeof rootReducer>
 
 export const store = legacy_createStore(rootReducer)
 
+// @ts-ignore
+window.store = store

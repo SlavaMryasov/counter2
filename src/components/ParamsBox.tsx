@@ -1,22 +1,30 @@
 import { useState } from "react"
-import { StateParamsType } from "../store/store"
+import { AppRootReducer, Messages, StateParamsType } from "../store/store"
 import { Button } from "./common/Button"
 import { Input } from "./common/Input"
 import { StyledBox } from "./layout/StyledBox"
+import { useDispatch, useSelector } from "react-redux"
+import { returnToInitialAC } from "../store/reducers/paramsReducer"
+import { setIncorrectMessageAC } from "../store/reducers/counterReducer"
 
 type PropsType = {
-    stateParamsValues: StateParamsType
+    disabledSet: boolean
     startValue: number
     maxValue: number
+    incorrectMessages: string
+    enterMessage: string
     setStartValue: (value: number) => void
     setMaxValue: (value: number) => void
     setValues: (start: number, max: number, disabled: boolean) => void
 
 }
 
-export const ParamBox = ({ stateParamsValues, startValue, maxValue, setStartValue, setMaxValue, setValues, }: PropsType) => {
+export const ParamBox = ({ disabledSet, startValue, maxValue, incorrectMessages, enterMessage,
+    setStartValue, setMaxValue, setValues, }: PropsType) => {
 
-    const isDisabled = stateParamsValues.disabledSet
+    let isDisabled = disabledSet
+    const dispatch = useDispatch()
+
 
     const [startMistake, setStartMistake] = useState(false)
     const [maxMistake, setMaxMistake] = useState(false)
@@ -24,11 +32,19 @@ export const ParamBox = ({ stateParamsValues, startValue, maxValue, setStartValu
     const changeStartValueHandler = (value: number) => {
         setStartValue(value)
         value < 0 ? setStartMistake(true) : setStartMistake(false)
+        dispatch(returnToInitialAC(enterMessage))
+        dispatch(setIncorrectMessageAC(incorrectMessages))
     }
 
     const changeMaxValueHandler = (value: number) => {
         setMaxValue(value)
-        value <= 0 ? setMaxMistake(true) : setMaxMistake(false)
+        if (value <= 0) {
+            setMaxMistake(true)
+            dispatch(setIncorrectMessageAC(incorrectMessages))
+        } else {
+            setMaxMistake(false)
+            dispatch(returnToInitialAC(enterMessage))
+        }
     }
 
     const setValuesHandler = () => {
@@ -37,7 +53,6 @@ export const ParamBox = ({ stateParamsValues, startValue, maxValue, setStartValu
 
     return (
         <>
-            <button onClick={() => console.log(isDisabled)}>isDisabled</button>
             <StyledBox $width='400px' $height="300px">
                 <StyledBox $width='360px' $height="150px">
                     <div>
